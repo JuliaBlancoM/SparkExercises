@@ -43,7 +43,7 @@ object ejer1 {
 
     val pasoTresDf = pasoDosDf.withColumn(
       "size",
-      when(col("size") === "-", null).otherwise(col("size"))
+      when(col("size").equalTo("-"), null).otherwise(col("size"))
     )
 
     val nasaDfFinal = pasoTresDf.withColumn(
@@ -53,7 +53,7 @@ object ejer1 {
 
     nasaDfFinal.show()
 
-    nasaDfFinal.write.format("txt").option("header", "true").save("src/main/resources/nasaDfFinal.txt")
+    nasaDfFinal.write.format("csv").option("header", "true").save("src/main/resources/nasaDfFinal.csv")
 
     //Consulta 1
     nasaDfFinal.groupBy("protocol").count().show()
