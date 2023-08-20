@@ -4,7 +4,7 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
 import org.apache.log4j._
 import org.apache.spark.sql.types._
-object Ejer1Junto {
+object ejercicioNasa {
   def main(args: Array[String]): Unit = {
     Logger.getLogger("org").setLevel(Level.OFF)
     val spark = SparkSession
