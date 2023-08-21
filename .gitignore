@@ -42,6 +42,7 @@ build/
 
 ### IDEA ###
 /.idea
+/src/main/python/.idea
 
 ### TEST ###
 /src/test
