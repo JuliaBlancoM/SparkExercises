@@ -42,7 +42,7 @@ build/
 
 ### IDEA ###
 /.idea
-src/main/python/.idea
+/src/main/python/.idea
 
 ### TEST ###
 /src/test
@@ -51,5 +51,5 @@ src/main/python/.idea
 /src/main/resources
 
 ### EXAMPLES ###
-src/main/scala/org/example
-src/main/python/main.py
+/src/main/scala/org/example
+/src/main/python/main.py
