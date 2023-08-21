@@ -101,7 +101,7 @@ object ejercicioPadron {
 
     val espanoleshombresDf = padronDf
       .groupBy("DESC_BARRIO", "DESC_DISTRITO")
-      .agg(sum("espanoleshombres").alias("total_espanoleshombres"))
+      .agg(sum("espanoleshombres").alias("totalEspanoleshombres"))
 
     espanoleshombresDf.show(10, false)
     val unionDf = padronDf.join(
@@ -110,6 +110,60 @@ object ejercicioPadron {
     )
 
     unionDf.show(10, false)
+
+    //6.13 Repite la función anterior utilizando funciones de ventana. (over(Window.partitionBy.....)).
+
+    import org.apache.spark.sql.expressions.Window
+
+    val ventana = Window.partitionBy("DESC_BARRIO", "DESC_DISTRITO")
+
+    val updatedPadronDF = padronDf.withColumn("totalEspanoleshombres", sum("espanoleshombres").over(ventana))
+
+    updatedPadronDF.show(10, false)
+
+    //6.14 Mediante una función Pivot muestra una tabla (que va a ser una tabla de contingencia) que contenga los valores
+    // totales (la suma de valores) de espanolesmujeres para cada distrito y en cada rango de edad (COD_EDAD_INT).
+    // Los distritos incluidos deben ser únicamente CENTRO, BARAJAS y RETIRO y deben figurar como columnas.
+
+    val tablaContingencia = padronDf.filter(col("DESC_DISTRITO").isin("CENTRO", "BARAJAS", "RETIRO"))
+      .groupBy(col("COD_EDAD_INT"))
+      .pivot("DESC_DISTRITO")
+      .agg(sum("espanolesmujeres"))
+      .orderBy("COD_EDAD_INT")
+
+    tablaContingencia.show()
+
+    //6.15 Utilizando este nuevo DF, crea 3 columnas nuevas que hagan referencia a qué porcentaje de la suma de "espanolesmujeres"
+    //en los tres distritos para cada rango de edad representa cada uno de los tres distritos. Debe estar redondeada a
+    //2 decimales. Puedes imponerte la condición extra de no apoyarte en ninguna columna auxiliar creada para el caso.
+
+    val totalmujeres = tablaContingencia("CENTRO") + tablaContingencia("BARAJAS") + tablaContingencia("RETIRO")
+
+    val porcentajeMujeres = tablaContingencia
+      .withColumn("MUJERES_CENTRO", round((tablaContingencia("CENTRO") / totalmujeres) * 100, 2))
+      .withColumn("MUJERES_BARAJAS", round((tablaContingencia("BARAJAS") / totalmujeres) * 100, 2))
+      .withColumn("MUJERES_RETIRO", round((tablaContingencia("RETIRO") / totalmujeres) * 100, 2))
+
+    porcentajeMujeres.show()
+
+    //6.16 Guarda el archivo csv original particionado por distrito y por barrio (en ese orden) en un directorio local.
+    //Consulta el directorio para ver la estructura de los ficheros y comprueba que es la esperada.
+
+    /*
+    padronDf.write
+      .partitionBy("DESC_DISTRITO", "DESC_BARRIO")
+      .format("csv")
+      .mode("overwrite")
+      .save("src/main/resources/padronDf.csv")
+    */
+
+    //6.17 Haz el mismo guardado pero en formato parquet. Compara el peso del archivo con el resultado anterior.
+    padronDf.write
+      .partitionBy("DESC_DISTRITO", "DESC_BARRIO")
+      .mode("overwrite")
+      .format("parquet")
+      .save("/FileStore/tables/padronDf.parquet")
+
 
   }
 
