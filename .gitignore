@@ -50,5 +50,5 @@ build/
 /src/main/resources
 
 ### EXAMPLES ###
-/src/main/scala/org
+/src/main/scala/org/example
 /src/main/python/main.py
