@@ -48,3 +48,7 @@ build/
 
 ### RESOURCE ###
 /src/main/resources
+
+### EXAMPLES ###
+/src/main/scala/org
+/src/main/python/main.py
