@@ -30,10 +30,11 @@ object App {
 
     val df3 = spark.read.text("src/main/resources/el_quijote.txt")
     df3.show()
-    //df.write.csv("src/resources/dfPruebas")
+    //df.write.csv("src/resources/dfPruebas_")
 
 
 
+ 
 
   }
 
